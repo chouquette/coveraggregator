@@ -26,9 +26,11 @@ func (c *CoverProfile) Aggregate(inputFile string) error {
 		return nil
 	}
 	for _, newProfile := range profiles {
+		found := false
 		for pIdx, p := range c.profiles {
 			// Find the matching file
 			if newProfile.FileName == p.FileName {
+				found = true
 				if p.Mode != newProfile.Mode {
 					return fmt.Errorf("Mismatching count mode: %s vs %s", p.Mode, newProfile.Mode)
 				}
@@ -54,6 +56,9 @@ func (c *CoverProfile) Aggregate(inputFile string) error {
 				// We processed the correct file, now process the next one
 				break
 			}
+		}
+		if found == false {
+			c.profiles = append(c.profiles, newProfile)
 		}
 	}
 	return nil
